@@ -48,7 +48,7 @@ function updateProducts($logger){
     * Con este comando uso git diff para comparar los archivos csv y sacar solo los
     * productos que se modificaron
     */
-    $command = "git diff --no-index --color=always old-files/oldProds.csv observados/product.txt |perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' > onlyModifiedProds.csv ";
+    $command = "git diff --no-index --color=always old-files/oldProds.csv /var/www/html/reactphp-couchdb-importer/observados/product.txt |perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' > onlyModifiedProds.csv ";
     $output = shell_exec($command);
 
     /*
@@ -70,7 +70,7 @@ function updateProducts($logger){
     * Copio el archivo csv con los productos nuevos a la carpeta de comparacion para
     * compararlos la proxima vez que se ejecute el cron
     */
-    $command = "cp observados/product.txt old-files/oldProds.csv";
+    $command = "cp /var/www/html/reactphp-couchdb-importer/observados/product.txt old-files/oldProds.csv";
     $output = shell_exec($command);
 
     try {
@@ -131,7 +131,7 @@ function updateProducts($logger){
 $loop = React\EventLoop\Factory::create();
 $inotify = new MKraemer\ReactInotify\Inotify($loop);
 
-$inotify->add('observados/', IN_CLOSE_WRITE | IN_CREATE | IN_DELETE);
+$inotify->add('/var/www/html/reactphp-couchdb-importer/observados/', IN_CLOSE_WRITE | IN_CREATE | IN_DELETE);
 //$inotify->add('/var/log/', IN_CLOSE_WRITE | IN_CREATE | IN_DELETE);
 
 $inotify->on(IN_CLOSE_WRITE, function ($path) use($logger, $database) {
