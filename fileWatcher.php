@@ -42,7 +42,7 @@ function utf8ize($mixed) {
    return $mixed;
 }
 
-function updateProducts($logger){
+function updateProducts($logger, $database){
 
     echo "se modificaron los productos perro hpta".PHP_EOL;
     /*
