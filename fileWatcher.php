@@ -15,6 +15,7 @@ use Kreait\Firebase\ServiceAccount;
 $logger = new Logger('import');
 $logger->pushHandler(new StreamHandler(__DIR__.'/logs/info.log', Logger::DEBUG));
 $logger->info('Inicio Script');
+echo 'Inicio Script';
 
 // FIREBASE
 $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firestore-test-1-todo-firebase-adminsdk-wzads-030e47b3cf.json');
@@ -108,14 +109,14 @@ function updateProducts($logger){
                 "precio"      => intval($record['precio1'])
             ];
                 
-            if(!$record['_delete'] == 'true'){
-                $newPost = $database
-                ->getReference('products/'.$record['codigo'])
-                ->set($producto); 
-            }else{
+            if($record['_delete'] == 'true'){
                 $newDelete = $database
                 ->getReference('products/'.$record['codigo'])
                 ->remove();
+            }else{
+                $newPost = $database
+                ->getReference('products/'.$record['codigo'])
+                ->set($producto);
             }
             
             var_dump($producto);
@@ -137,12 +138,15 @@ $inotify->add('/var/www/html/reactphp-couchdb-importer/observados/', IN_CLOSE_WR
 $inotify->on(IN_CLOSE_WRITE, function ($path) use($logger, $database) {
     $logger->info('***********************************************************************************');
     $logger->info('File closed after writing: '.$path.PHP_EOL);
+    echo '***********************************************************************************';
+    echo 'File closed after writing: '.$path.PHP_EOL;
 
     if($path == "observados/product.txt"){
         updateProducts($logger, $database);
     }
 
     $logger->info('***********************************************************************************');
+    echo 'File closed after writing: '.$path.PHP_EOL;
 });
 
 $inotify->on(IN_CREATE, function ($path) use($logger) {
