@@ -141,7 +141,7 @@ $inotify->on(IN_CLOSE_WRITE, function ($path) use($logger, $database) {
     echo '***********************************************************************************';
     echo 'File closed after writing: '.$path.PHP_EOL;
 
-    if($path == "observados/product.txt"){
+    if($path == "/var/www/html/reactphp-couchdb-importer/observados/product.txt"){
         updateProducts($logger, $database);
     }
 
