@@ -100,7 +100,7 @@ function updateProducts($logger, $database){
 
             $producto = [
                 "_id"         => $record['codigo'],
-                "titulo"      => $tituloApli[0],
+                "titulo"      => utf8_encode($tituloApli[0]),
                 "aplicacion"  => $aplMarca[0],
                 "imagen"      => "https://www.igbcolombia.com/img_app/{$record['codigo']}.jpg",
                 "categoria"   => null,
