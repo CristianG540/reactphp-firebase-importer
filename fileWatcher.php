@@ -10,6 +10,7 @@ use League\Csv\Statement;
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
+use Kreait\Firebase\Exception\ApiException;
 
 // create a log channel
 $logger = new Logger('import');
@@ -109,19 +110,34 @@ function updateProducts($logger, $database){
                 "precio"      => intval($record['precio1'])
             ];
                 
-            echo "prod".$record['codigo'];
+            echo "prod".$record['codigo']."\n";
 
-            if($record['_delete'] == 'true'){
-                $newDelete = $database
-                ->getReference('products/'.$record['codigo'])
-                ->remove();
-            }else{
-                $newPost = $database
-                ->getReference('products/'.$record['codigo'])
-                ->set($producto);
+            try {
+                if($record['_delete'] == 'true'){
+                    $newDelete = $database
+                    ->getReference('products/'.$record['codigo'])
+                    ->remove();
+                }else{
+                    $newPost = $database
+                    ->getReference('products/'.$record['codigo'])
+                    ->set($producto);
+                }
+                var_dump($producto);
+
+            } catch (ApiException $e) {
+                /** @var \Psr\Http\Message\RequestInterface $request */
+                $request = $e->getRequest();
+                /** @var \Psr\Http\Message\ResponseInterface|null $response */
+                $response = $e->getResponse();
+
+                echo $request->getUri().PHP_EOL;
+                echo $request->getBody().PHP_EOL;
+
+                if ($response) {
+                    echo $response->getBody();
+                }
             }
-            
-            var_dump($producto);
+
         }
 
     } catch (Throwable $e) {
