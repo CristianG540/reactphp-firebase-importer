@@ -109,6 +109,8 @@ function updateProducts($logger, $database){
                 "precio"      => intval($record['precio1'])
             ];
                 
+            echo "prod".$record['codigo'];
+
             if($record['_delete'] == 'true'){
                 $newDelete = $database
                 ->getReference('products/'.$record['codigo'])
